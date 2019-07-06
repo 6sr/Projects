@@ -1,0 +1,57 @@
+body { 
+    margin: 0 auto; 
+    background-position:center; 
+    background-size: contain; 
+} 
+
+.menu { 
+    position: sticky; 
+    top: 0; 
+    background-color: #00aa00; 
+    padding:20px 0px 20px 0px; 
+    color:white; 
+    margin: 0 auto; 
+    overflow: hidden; 
+} 
+.menu a { 
+    float left; 
+    color: white; 
+    text-align: center; 
+    padding: 20px 20px; 
+    text-decoration: none; 
+    font-size: 20px; 
+} 
+.menu a:hover, .menu .active { 
+    background-color: black;
+}
+.menu-log { 
+    right: auto; 
+    float: right; 
+} 
+footer { 
+    width: 100%; 
+    bottom: 0px; 
+    background-color: #000; 
+    color: #fff; 
+    position: absolute; 
+    padding-top:20px; 
+    padding-bottom:50px; 
+    text-align:center; 
+    font-size:30px; 
+    font-weight:bold; 
+} 
+.bodySection { 
+    margin-left:20px; 
+} 
+#Content {
+    color: #00aa00;
+    text-align: center;
+    padding: 5vw 0;
+    font-size: 3.5vw;
+}
+.bodySection .gotoBtn {
+	border-radius: 10%;
+	padding:10px;
+	background: #1abc9c;
+	color: white;
+}
