@@ -46,7 +46,7 @@ footer {
 #Content {
     color: #00aa00;
     text-align: center;
-    padding: 5vw 0;
+    /*padding: 5vw 0;*/
     font-size: 3.5vw;
 }
 .bodySection .gotoBtn {

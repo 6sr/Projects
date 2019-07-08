@@ -27,7 +27,7 @@
 		</div> 
 	</div> 
 	
-	<!-- Body section -->
+	<!-- Body section --><br><br><br>
 	<div class = "bodySection"> 
 		<section id="Content"> 
             This system allows all registered users to vote for their favorite <strong>PROGRAMMING LANGUAGE</strong>.<br><br>

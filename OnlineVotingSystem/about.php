@@ -19,7 +19,7 @@
 	</div> 
 	
 	<!-- Body section -->
-	<div class = "bodySection"> 
+	<div class = "bodySection"> <br><br><br>
 		<section id="Content" style="font-size:5vw;color: black;">
             <strong> Sachin Roy </strong>
             <br>
