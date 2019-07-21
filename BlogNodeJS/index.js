@@ -2,9 +2,10 @@ const path = require('path')
 const express = require('express')
 const expressEdge = require('express-edge')
 const mongoose = require('mongoose')
-
+const bodyParser = require('body-parser')
 const app = new express()
 
+const post = require('./database/models/post')
 mongoose.connect('mongodb://localhost/node-js-blog')
 
 app.use(express.static('pages'))
@@ -13,6 +14,9 @@ app.use(express.static('pages'))
 app.use(expressEdge)
 app.set('views',`${__dirname}/views`)
 
+// For post request - body-parser
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({extended: true}))
 
 app.get('/', (req,res) => {
     //res.sendfile(path.resolve(__dirname,'pages/index.html'))
@@ -24,7 +28,11 @@ app.get('/posts/new', (req,res) => {
 })
 
 app.post('/posts/store', (req,res) => {
-    res.redirect('/')
+    post.create(req.body, (error, post) => {
+        res.redirect('/')
+    })
+    //console.log(req.body)
+    // prints post form data
 })
 
 app.get('/about', (req,res) => {

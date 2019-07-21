@@ -3,8 +3,17 @@ const mongoose = require('mongoose')
 const post = require('./database/models/post')
 
 mongoose.connect('mongodb://localhost/node-js-blog')
+// mongoose.connect('mongodb://localhost/node-js-test-blog')
 
+post.find({}, (error, post) => {
+    console.log(error, post)
+})
 
+/*
+post.deleteMany({}, (error, post) => {
+    console.log(error, post)
+})
+*/
 /*
 // Updates database but prints old data
 post.findByIdAndUpdate('5d2b6bdc2c17bc08f036346e',{
