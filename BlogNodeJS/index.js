@@ -18,9 +18,14 @@ app.set('views',`${__dirname}/views`)
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended: true}))
 
-app.get('/', (req,res) => {
-    //res.sendfile(path.resolve(__dirname,'pages/index.html'))
-    res.render('index')
+app.get('/', async (req,res) => {
+    const posts = await post.find({})
+
+    console.log(posts)
+
+    res.render('index', {
+        posts
+    })
 })
 
 app.get('/posts/new', (req,res) => {
@@ -28,6 +33,8 @@ app.get('/posts/new', (req,res) => {
 })
 
 app.post('/posts/store', (req,res) => {
+    console.log(req.body)
+
     post.create(req.body, (error, post) => {
         res.redirect('/')
     })
@@ -40,9 +47,14 @@ app.get('/about', (req,res) => {
     res.render('about')
 })
 
-app.get('/post', (req,res) => {
-    //res.sendfile(path.resolve(__dirname,'pages/post.html'))
-    res.render('post')
+app.get('/post/:id',async (req,res) => {
+    const posts = await post.findById(req.params.id)
+
+    console.log(req.params)
+
+    res.render('post', {
+        posts
+    })
 })
 
 app.get('/contact', (req,res) => {
@@ -53,6 +65,5 @@ app.get('/contact', (req,res) => {
 
 app.listen(4000, () => {
     console.log('App listening on port 4000');
-
 })
 
