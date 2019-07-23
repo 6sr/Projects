@@ -8,8 +8,12 @@ const app = new express()
 const post = require('./database/models/post')
 mongoose.connect('mongodb://localhost/node-js-blog')
 
-app.use(express.static('pages'))
-//app.use(express.static(path.join(__dirname,'pages')))
+const fileUpload = require('express-fileupload')
+
+app.use(fileUpload())
+
+app.use(express.static('public'))
+//app.use(express.static(path.join(__dirname,'public')))
 
 app.use(expressEdge)
 app.set('views',`${__dirname}/views`)
@@ -33,17 +37,27 @@ app.get('/posts/new', (req,res) => {
 })
 
 app.post('/posts/store', (req,res) => {
-    console.log(req.body)
+    const { image } = req.files
 
-    post.create(req.body, (error, post) => {
-        res.redirect('/')
+    image.mv(path.resolve(__dirname, 'public/posts', image.name), (error) => {
+        post.create({
+            ...req.body,
+            image: `/posts/${image.name}`
+        }, (error, post) => {
+            res.redirect('/')
+        })
     })
+
+    // console.log(req.files)
+
+    // console.log(req.body)
+
     //console.log(req.body)
     // prints post form data
 })
 
 app.get('/about', (req,res) => {
-    //res.sendfile(path.resolve(__dirname,'pages/about.html'))
+    //res.sendfile(path.resolve(__dirname,'public/about.html'))
     res.render('about')
 })
 
@@ -58,7 +72,7 @@ app.get('/post/:id',async (req,res) => {
 })
 
 app.get('/contact', (req,res) => {
-    //res.sendfile(path.resolve(__dirname,'pages/contact.html'))
+    //res.sendfile(path.resolve(__dirname,'public/contact.html'))
     res.render('contact')
 })
 
