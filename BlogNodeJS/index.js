@@ -1,82 +1,70 @@
+// ============================================ Importing module for defining paths ============================================
 const path = require('path')
+
+// ============================================ Importing express modules ============================================
 const express = require('express')
 const expressEdge = require('express-edge')
-const mongoose = require('mongoose')
-const bodyParser = require('body-parser')
 const app = new express()
 
-const post = require('./database/models/post')
-mongoose.connect('mongodb://localhost/node-js-blog')
+// ============================================ Importing module to parse forms ============================================
+const bodyParser = require('body-parser')
 
+// ============================================ Importing module for database ============================================
+const mongoose = require('mongoose')
+// const post = require('./database/models/post')
+mongoose.connect('mongodb://localhost/node-js-blog', { useNewUrlParser: true })
+
+// ============================================ Importing module for image upload ============================================
 const fileUpload = require('express-fileupload')
 
+// ============================================ Importing Controllers ============================================
+const homePageController = require('./controllers/homePage')
+const createPostController = require('./controllers/createPost')
+const getPostController = require('./controllers/getPost')
+const storePostController = require('./controllers/storePost')
+
+// ============================================ Using Middleware ============================================
 app.use(fileUpload())
 
 app.use(express.static('public'))
 //app.use(express.static(path.join(__dirname,'public')))
 
 app.use(expressEdge)
-app.set('views',`${__dirname}/views`)
 
 // For post request - body-parser
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended: true}))
 
-app.get('/', async (req,res) => {
-    const posts = await post.find({})
+// ================ Defining my own middleware ================
+const customMiddleware = (req, res, next) => {
+    console.log("customMiddleware is called");
+    next();
+}
 
-    console.log(posts)
+// Using my middleware for all requests
+app.use(customMiddleware)
 
-    res.render('index', {
-        posts
-    })
-})
+const storePostMiddleware = require('./middleware/storePost')
 
-app.get('/posts/new', (req,res) => {
-    res.render('create')
-})
-
-app.post('/posts/store', (req,res) => {
-    const { image } = req.files
-
-    image.mv(path.resolve(__dirname, 'public/posts', image.name), (error) => {
-        post.create({
-            ...req.body,
-            image: `/posts/${image.name}`
-        }, (error, post) => {
-            res.redirect('/')
-        })
-    })
-
-    // console.log(req.files)
-
-    // console.log(req.body)
-
-    //console.log(req.body)
-    // prints post form data
-})
-
-app.get('/about', (req,res) => {
-    //res.sendfile(path.resolve(__dirname,'public/about.html'))
-    res.render('about')
-})
-
-app.get('/post/:id',async (req,res) => {
-    const posts = await post.findById(req.params.id)
-
-    console.log(req.params)
-
-    res.render('post', {
-        posts
-    })
-})
-
-app.get('/contact', (req,res) => {
-    //res.sendfile(path.resolve(__dirname,'public/contact.html'))
-    res.render('contact')
-})
+// Using my middleware only for request to '/posts/store'
+app.use('/posts/store', storePostMiddleware);
 
 
+// ============================================ Setting views directory ============================================
+app.set('views',`${__dirname}/views`)
+
+
+// ============================================ Creating actions for requests ============================================
+app.get('/', homePageController)
+
+app.get('/posts/new', createPostController)
+
+app.post('/posts/store', storePostController)
+
+app.get('/post/:id', getPostController)
+
+// ============================================ Running application at port 4000 ============================================
+// http://localhost:4000/
 app.listen(4000, () => {
     console.log('App listening on port 4000');
 })
