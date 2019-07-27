@@ -19,9 +19,16 @@ const fileUpload = require('express-fileupload')
 
 // ============================================ Importing Controllers ============================================
 const homePageController = require('./controllers/homePage')
+
 const createPostController = require('./controllers/createPost')
 const getPostController = require('./controllers/getPost')
 const storePostController = require('./controllers/storePost')
+
+const createUserController = require('./controllers/createUser')
+const storeUserController = require('./controllers/storeUser')
+
+const loginController = require('./controllers/login')
+const loginUserController = require('./controllers/loginUser')
 
 // ============================================ Using Middleware ============================================
 app.use(fileUpload())
@@ -57,11 +64,22 @@ app.set('views',`${__dirname}/views`)
 // ============================================ Creating actions for requests ============================================
 app.get('/', homePageController)
 
+
 app.get('/posts/new', createPostController)
 
 app.post('/posts/store', storePostController)
 
 app.get('/post/:id', getPostController)
+
+
+app.get('/auth/register', createUserController)
+
+app.post('/users/register', storeUserController)
+
+
+app.get('/auth/login', loginController)
+
+app.post('/users/login', loginUserController)
 
 // ============================================ Running application at port 4000 ============================================
 // http://localhost:4000/
