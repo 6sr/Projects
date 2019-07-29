@@ -17,6 +17,9 @@ mongoose.connect('mongodb://localhost/node-js-blog', { useNewUrlParser: true })
 // ============================================ Importing module for image upload ============================================
 const fileUpload = require('express-fileupload')
 
+// ============================================ Importing module for user session ============================================
+const expressSession = require('express-session')
+
 // ============================================ Importing Controllers ============================================
 const homePageController = require('./controllers/homePage')
 
@@ -32,6 +35,10 @@ const loginUserController = require('./controllers/loginUser')
 
 // ============================================ Using Middleware ============================================
 app.use(fileUpload())
+
+app.use(expressSession({
+    secret: 'secret'
+}))
 
 app.use(express.static('public'))
 //app.use(express.static(path.join(__dirname,'public')))
