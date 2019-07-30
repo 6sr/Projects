@@ -20,6 +20,12 @@ const fileUpload = require('express-fileupload')
 // ============================================ Importing module for user session ============================================
 const expressSession = require('express-session')
 
+// ============================================ Importing module for user session ============================================
+const connectMongo = require('connect-mongo')
+
+// ============================================ Importing module for user session ============================================
+const connectFlash = require('connect-flash')
+
 // ============================================ Importing Controllers ============================================
 const homePageController = require('./controllers/homePage')
 
@@ -36,9 +42,16 @@ const loginUserController = require('./controllers/loginUser')
 // ============================================ Using Middleware ============================================
 app.use(fileUpload())
 
+// Storing session in database
+const mongoStore = connectMongo(expressSession)
 app.use(expressSession({
-    secret: 'secret'
+    secret: 'secret',
+    store: new mongoStore({
+        mongooseConnection: mongoose.connection
+    })
 }))
+
+app.use(connectFlash())
 
 app.use(express.static('public'))
 //app.use(express.static(path.join(__dirname,'public')))
@@ -51,7 +64,7 @@ app.use(bodyParser.urlencoded({extended: true}))
 
 // ================ Defining my own middleware ================
 const customMiddleware = (req, res, next) => {
-    console.log("customMiddleware is called");
+    // console.log("customMiddleware is called");
     next();
 }
 
@@ -60,9 +73,15 @@ app.use(customMiddleware)
 
 const storePostMiddleware = require('./middleware/storePost')
 
+// See similar way in post request below
 // Using my middleware only for request to '/posts/store'
-app.use('/posts/store', storePostMiddleware);
+// app.use('/posts/store', storePostMiddleware);
 
+
+const authMiddleware = require('./middleware/auth')
+
+// See similar way in get request below
+// app.use('/posts/new', authMiddleware)
 
 // ============================================ Setting views directory ============================================
 app.set('views',`${__dirname}/views`)
@@ -72,9 +91,9 @@ app.set('views',`${__dirname}/views`)
 app.get('/', homePageController)
 
 
-app.get('/posts/new', createPostController)
+app.get('/posts/new', authMiddleware, createPostController)
 
-app.post('/posts/store', storePostController)
+app.post('/posts/store', authMiddleware, storePostMiddleware, storePostController)
 
 app.get('/post/:id', getPostController)
 
