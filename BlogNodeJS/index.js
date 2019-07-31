@@ -6,6 +6,9 @@ const express = require('express')
 const expressEdge = require('express-edge')
 const app = new express()
 
+// ============================================ Importing module to hide/show login, register, logout buttons ==============
+const edge = require('edge.js')
+
 // ============================================ Importing module to parse forms ============================================
 const bodyParser = require('body-parser')
 
@@ -23,7 +26,7 @@ const expressSession = require('express-session')
 // ============================================ Importing module for user session ============================================
 const connectMongo = require('connect-mongo')
 
-// ============================================ Importing module for user session ============================================
+// ============================================ Importing module for displaying errors for single request ====================
 const connectFlash = require('connect-flash')
 
 // ============================================ Importing Controllers ============================================
@@ -38,6 +41,8 @@ const storeUserController = require('./controllers/storeUser')
 
 const loginController = require('./controllers/login')
 const loginUserController = require('./controllers/loginUser')
+
+const logoutController = require('./controllers/logout')
 
 // ============================================ Using Middleware ============================================
 app.use(fileUpload())
@@ -63,6 +68,8 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended: true}))
 
 // ================ Defining my own middleware ================
+
+// customMiddleware is not related to this app
 const customMiddleware = (req, res, next) => {
     // console.log("customMiddleware is called");
     next();
@@ -83,6 +90,16 @@ const authMiddleware = require('./middleware/auth')
 // See similar way in get request below
 // app.use('/posts/new', authMiddleware)
 
+const redirectIfAuthenticated = require('./middleware/redirectIfAuthenticated')
+
+// Sharing session userId globally
+app.use('*', (req, res, next) => {
+    // Using edge templating engine, the global variable 'auth' is available on 
+    // all templates rendered by our templating engine
+    edge.global('auth', req.session.userId)
+    next()
+})
+
 // ============================================ Setting views directory ============================================
 app.set('views',`${__dirname}/views`)
 
@@ -98,14 +115,18 @@ app.post('/posts/store', authMiddleware, storePostMiddleware, storePostControlle
 app.get('/post/:id', getPostController)
 
 
-app.get('/auth/register', createUserController)
+app.get('/auth/register', redirectIfAuthenticated, createUserController)
 
-app.post('/users/register', storeUserController)
+app.post('/users/register', redirectIfAuthenticated, storeUserController)
 
 
-app.get('/auth/login', loginController)
+app.get('/auth/login', redirectIfAuthenticated, loginController)
 
-app.post('/users/login', loginUserController)
+app.post('/users/login', redirectIfAuthenticated, loginUserController)
+
+app.get('/auth/logout', logoutController)
+// Below command is not able to logout but redirects to main page without logging out WHY?
+// app.get('/auth/logout', redirectIfAuthenticated, logoutController)
 
 // ============================================ Running application at port 4000 ============================================
 // http://localhost:4000/

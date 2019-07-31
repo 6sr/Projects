@@ -37,21 +37,21 @@
                 <div class="control-group">
                         <div class="form-group floating-label-form-group controls">
                             <label>Username</label>
-                            <input type="text" name="username" class="form-control" placeholder="Username ...">
+                            <input type="text" name="username" class="form-control" value = "{{ data.username || '' }}" placeholder="Username ...">
                         </div>
                     </div>
 
                     <div class="control-group">
                     <div class="form-group floating-label-form-group controls">
                         <label>Email</label>
-                        <input type="email" name="email" class="form-control" placeholder="Email ...">
+                        <input type="email" name="email" class="form-control" value = "{{ data.email || '' }}" placeholder="Email ...">
                     </div>
                 </div>
 
                 <div class="control-group">
                     <div class="form-group floating-label-form-group controls">
                         <label>Password</label>
-                        <input type="password" name="password" class="form-control" placeholder="Password ...">
+                        <input type="password" name="password" class="form-control" value = "{{ data.password || '' }}" placeholder="Password ...">
                     </div>
                 </div>
 
