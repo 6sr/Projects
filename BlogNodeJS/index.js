@@ -124,9 +124,13 @@ app.get('/auth/login', redirectIfAuthenticated, loginController)
 
 app.post('/users/login', redirectIfAuthenticated, loginUserController)
 
-app.get('/auth/logout', logoutController)
+app.get('/auth/logout', authMiddleware, logoutController)
 // Below command is not able to logout but redirects to main page without logging out WHY?
 // app.get('/auth/logout', redirectIfAuthenticated, logoutController)
+
+app.use((req, res) => {
+    res.render('not-found')
+})
 
 // ============================================ Running application at port 4000 ============================================
 // http://localhost:4000/
