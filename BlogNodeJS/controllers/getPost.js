@@ -1,7 +1,7 @@
 const post = require('../database/models/Post')
 
 module.exports = async (req,res) => {
-    const posts = await post.findById(req.params.id).populate('author')
+    const posts = await post.findById(req.params.id)
 
     console.log(req.params)
 

@@ -8,8 +8,7 @@ module.exports = (req,res) => {
     image.mv(path.resolve(__dirname, '..', 'public/posts', image.name), (error) => {
         post.create({
             ...req.body,
-            image: `/posts/${image.name}`,
-            author: req.session.userId
+            image: `/posts/${image.name}`
         }, (error, post) => {
             res.redirect('/')
         })
