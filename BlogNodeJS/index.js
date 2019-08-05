@@ -1,3 +1,7 @@
+// =========================================== Importing module for Environment variables ======================================
+require('dotenv').config();
+// console.log(process.env);
+
 // ============================================ Importing module for defining paths ============================================
 const path = require('path')
 
@@ -15,10 +19,13 @@ const bodyParser = require('body-parser')
 // ============================================ Importing module for database ============================================
 const mongoose = require('mongoose')
 // const post = require('./database/models/post')
-mongoose.connect('mongodb://localhost/node-js-blog', { useNewUrlParser: true })
+mongoose.connect(process.env.DB_URI, { useNewUrlParser: true })
 
 // ============================================ Importing module for image upload ============================================
 const fileUpload = require('express-fileupload')
+
+// ============================================ Importing module to upload data to remote server =============================
+const cloudinary = require('cloudinary')
 
 // ============================================ Importing module for user session ============================================
 const expressSession = require('express-session')
@@ -50,13 +57,19 @@ app.use(fileUpload())
 // Storing session in database
 const mongoStore = connectMongo(expressSession)
 app.use(expressSession({
-    secret: 'secret',
+    secret: process.env.EXPRESS_SESSION_KEY,
     store: new mongoStore({
         mongooseConnection: mongoose.connection
     })
 }))
 
 app.use(connectFlash())
+
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET
+})
 
 app.use(express.static('public'))
 //app.use(express.static(path.join(__dirname,'public')))
@@ -133,8 +146,8 @@ app.use((req, res) => {
 })
 
 // ============================================ Running application at port 4000 ============================================
-// http://localhost:4000/
-app.listen(4000, () => {
-    console.log('App listening on port 4000');
+// http://localhost:port/
+app.listen(process.env.PORT, () => {
+    console.log(`App listening on port ${process.env.PORT}`);
 })
 
